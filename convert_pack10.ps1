@@ -40,7 +40,8 @@ if ($MyInvocation.InvocationName -eq $PSCommandPath) {
     $numbers = "20241231"
     $pack10 = Convert-Pack10 -numbers $numbers
     $now = Get-Date -Format "yyyyMMdd-HHmmss"
-    $savepath = ".\Desktop\pack10\" + "pack10_" + $now + ".dat"
+    $current_dir = Split-Path -Parent $MyInvocation.MyCommand.Path
+    $savepath = $current_dir + "\pack10_" + $now + ".dat"
     $pack10 | Out-File -FilePath $savepath -Encoding UTF8
     Write-Output $pack10
 }

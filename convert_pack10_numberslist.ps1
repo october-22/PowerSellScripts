@@ -3,14 +3,13 @@
 
 <#
 numberslist.txtから、連結されたpack10進数を生成する。
-
-
 #>
 
 
 if ($MyInvocation.InvocationName -eq $PSCommandPath) {
     
-    $filePath = ".\Desktop\numberslist.txt"
+    $current_dir = Split-Path -Parent $MyInvocation.MyCommand.Path
+    $filePath = $current_dir + "\numberslist.txt"
     $numberslist = Read-NumbersList -filePath $filePath
     
     Write-Output $lines
@@ -21,7 +20,8 @@ if ($MyInvocation.InvocationName -eq $PSCommandPath) {
     }
 
     $now = Get-Date -Format "yyyyMMdd-HHmmss"
-    $savepath = ".\Desktop\pack10\" + "pack10_all_" + $now + ".dat"
+    $current_dir = Split-Path -Parent $MyInvocation.MyCommand.Path
+    $savepath = $current_dir + "\pack10_all_" + $now + ".dat"
     $pack10_all | Out-File -FilePath $savepath -Encoding UTF8
     Write-Output $pack10_all
 

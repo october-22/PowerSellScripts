@@ -33,6 +33,7 @@ function Read-NumbersList {
 }
 
 if ($MyInvocation.InvocationName -eq $PSCommandPath) {
-    $filePath = ".\Desktop\pack10\numberslist.txt"
+    $current_dir = Split-Path -Parent $MyInvocation.MyCommand.Path
+    $filePath = $current_dir + "\numberslist.txt"
     Read-NumbersList -filePath $filePath
 }

@@ -76,7 +76,8 @@ function Get-Array2D_ExcelRange {
 }
 
 if ($MyInvocation.InvocationName -eq $PSCommandPath) {
-    $excelFilePath = "C:\Users\user1\Desktop\pack10\workbook1.xlsx"
+    $current_dir = Split-Path -Parent $MyInvocation.MyCommand.Path
+    $excelFilePath = $current_dir + "\workbook1.xlsx"
     $Array2D = Get-ExcelColumnData -ExcelFilePath $excelFilePath -WorkSheetNumber 1 -StartColumn 3 -EndColumn 4 -StartRow 2 -EndRow 6 
     Write-Output $Array2D
 }
