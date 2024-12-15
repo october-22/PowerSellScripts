@@ -15,7 +15,7 @@
 
 .NOTES
     バージョン 1.0
-    作成者: kaji
+    作成者:
 #>
 function Convert-Pack10 {
     param (
