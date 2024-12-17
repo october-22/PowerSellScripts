@@ -24,6 +24,9 @@
 .PARAMETER EndRow
     終了行位置
 
+.PARAMETER Direction
+    セル参照方向 "column" : 一列ずつ配列化 "row": 一行ずつ配列化  
+
 .EXAMPLE
     Get-Array2D_ExcelRange -ExcelFilePath $excelFilePath -WorkSheetNumber 1 -StartColumn 3 -EndColumn 4 -StartRow 2 -EndRow 6 
     出力: [[1, 2, 3, 4, 5], [6, 7, 8, 9, 10]]
@@ -36,11 +39,12 @@
 function Get-Array2D_ExcelRange {
     param (
         [string]$ExcelFilePath,
-        [int]$WorkSheetNumber,
-        [int]$StartColumn,
+        [int]$WorkSheetNumber = 1,
+        [int]$StartColumn = 1,
         [int]$EndColumn,
-        [int]$StartRow,
-        [int]$EndRow
+        [int]$StartRow = 1,
+        [int]$EndRow,
+        [string]$Direction = "row"
     )
 
     $Excel = New-Object -ComObject Excel.Application
@@ -49,17 +53,33 @@ function Get-Array2D_ExcelRange {
     $Worksheet = $Workbook.Worksheets.Item($WorkSheetNumber)
 
     $Array2D = @()
-    for ($col = $StartColumn; $col -le $EndColumn; $col++) {
-        $Array = @()
+    
+    if($Direction -eq "column"){
+        for ($col = $StartColumn; $col -le $EndColumn; $col++) {
+            $Array = @()
+            for ($row = $StartRow; $row -le $EndRow; $row++) {
+                $CellValue = $Worksheet.Cells.Item($row, $col).Value2
+                if ($CellValue -eq $null) {
+                    $Array += "null"
+                } else {
+                    $Array += $CellValue
+                }
+             }
+            $Array2D += $Array
+        }
+    }else{
         for ($row = $StartRow; $row -le $EndRow; $row++) {
-            $CellValue = $Worksheet.Cells.Item($row, $col).Value2
-            if ($CellValue -eq $null) {
-                $Array += "null"
-            } else {
-                $Array += $CellValue
-            }
-         }
-        $Array2D += $Array
+            $Array = @()
+            for ($col = $StartColumn; $col -le $EndColumn; $col++) {
+                $CellValue = $Worksheet.Cells.Item($row, $col).Value2
+                if ($CellValue -eq $null) {
+                    $Array += "null"
+                } else {
+                    $Array += $CellValue
+                }
+             }
+            $Array2D += $Array
+        }
     }
 
     $Workbook.Close($false)
@@ -81,3 +101,4 @@ if ($MyInvocation.InvocationName -eq $PSCommandPath) {
     $Array2D = Get-ExcelColumnData -ExcelFilePath $excelFilePath -WorkSheetNumber 1 -StartColumn 3 -EndColumn 4 -StartRow 2 -EndRow 6 
     Write-Output $Array2D
 }
+
