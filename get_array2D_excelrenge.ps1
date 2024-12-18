@@ -32,8 +32,7 @@
     出力: [[1, 2, 3, 4, 5], [6, 7, 8, 9, 10]]
 
 .NOTES
-    バージョン 1.0
-    作成者: 
+    バージョン 1.0 
 #>
 
 function Get-Array2D_ExcelRange {

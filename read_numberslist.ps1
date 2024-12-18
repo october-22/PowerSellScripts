@@ -14,7 +14,6 @@
 
 .NOTES
     バージョン 1.0
-    作成者: 
 #>
 
 function Read-NumbersList {
