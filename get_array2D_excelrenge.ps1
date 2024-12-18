@@ -59,7 +59,7 @@ function Get-Array2D_ExcelRange {
             $Array = @()
             for ($row = $StartRow; $row -le $EndRow; $row++) {
                 $CellValue = $Worksheet.Cells.Item($row, $col).Value2
-                if ($CellValue -eq $null) {
+                if ($null -eq $CellValue) {
                     $Array += "null"
                 } else {
                     $Array += $CellValue
@@ -72,7 +72,7 @@ function Get-Array2D_ExcelRange {
             $Array = @()
             for ($col = $StartColumn; $col -le $EndColumn; $col++) {
                 $CellValue = $Worksheet.Cells.Item($row, $col).Value2
-                if ($CellValue -eq $null) {
+                if ($null -eq $CellValue) {
                     $Array += "null"
                 } else {
                     $Array += $CellValue

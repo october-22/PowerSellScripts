@@ -9,7 +9,8 @@
             "type": "PowerShell",
             "request": "launch",
             "script": "${file}",
-            "args": []
+            "args": [],
+            "cwd": "${workspaceFolder}"
         }
     ]
 }

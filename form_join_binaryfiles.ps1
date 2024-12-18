@@ -47,8 +47,6 @@ $form.Text = "Join BinaryFiles"
 $form.Size = New-Object System.Drawing.Size(510, 360)
 $form.FormBorderStyle = [System.Windows.Forms.FormBorderStyle]::FixedSingle
 
-# listBox --------------------------------------------------
-
 $listBox = New-Object System.Windows.Forms.ListBox
 $listBox.Location = New-Object System.Drawing.Point(20, 10)
 $listBox.Size = New-Object System.Drawing.Size(400, 300)
@@ -56,7 +54,42 @@ $listBox.AllowDrop = $true
 $toolTip = New-Object System.Windows.Forms.ToolTip
 $toolTip.SetToolTip($listBox, "Drop selected binary files here. | .dat or .bin")
 
-# drag and drop event
+$button_open = New-Object System.Windows.Forms.Button
+$button_open.Text = "..."
+$button_open.Location = New-Object System.Drawing.Point(430, 10)
+$button_open.Size = New-Object System.Drawing.Size(60, 25)
+
+$button_up = New-Object System.Windows.Forms.Button
+$button_up.Text = "↑"
+$button_up.Location = New-Object System.Drawing.Point(430, 50)
+$button_up.Size = New-Object System.Drawing.Size(60, 25)
+
+$button_down = New-Object System.Windows.Forms.Button
+$button_down.Text = "↓"
+$button_down.Location = New-Object System.Drawing.Point(430, 90)
+$button_down.Size = New-Object System.Drawing.Size(60, 25)
+
+$button_delete = New-Object System.Windows.Forms.Button
+$button_delete.Text = "del"
+$button_delete.Location = New-Object System.Drawing.Point(430, 130)
+$button_delete.Size = New-Object System.Drawing.Size(60, 25)
+
+$button_clear = New-Object System.Windows.Forms.Button
+$button_clear.Text = "clear"
+$button_clear.Location = New-Object System.Drawing.Point(430, 170)
+$button_clear.Size = New-Object System.Drawing.Size(60, 25)
+
+$button_run = New-Object System.Windows.Forms.Button
+$button_run.Text = "join"
+$button_run.Location = New-Object System.Drawing.Point(430, 280)
+$button_run.Size = New-Object System.Drawing.Size(60, 25)
+
+$fileDialog = New-Object System.Windows.Forms.OpenFileDialog
+$fileDialog.Filter = "Binary Files (*.bin;*.dat)|*.bin;*.dat|All Files (*.*)|*.*"
+$fileDialog.Multiselect = $true
+
+# listbox drag and drop event ---------------------------------------------------
+
 $listBox.Add_DragEnter({
     param($sender, $e)
     if ($e.Data.GetDataPresent([System.Windows.Forms.DataFormats]::FileDrop)) {
@@ -90,18 +123,8 @@ $listBox.Add_DragDrop({
     }
 })
 
-$form.Controls.Add($listBox)
+# button click event -------------------------------------------------
 
-# file open dialog --------------------------------------------
-
-$fileDialog = New-Object System.Windows.Forms.OpenFileDialog
-$fileDialog.Filter = "Binary Files (*.bin;*.dat)|*.bin;*.dat|All Files (*.*)|*.*"
-$fileDialog.Multiselect = $true
-
-$button_open = New-Object System.Windows.Forms.Button
-$button_open.Text = "..."
-$button_open.Location = New-Object System.Drawing.Point(430, 10)
-$button_open.Size = New-Object System.Drawing.Size(60, 25)
 $button_open.Add_Click({
     if ($fileDialog.ShowDialog() -eq "OK") {
        $listBox.Items.Clear()
@@ -111,14 +134,6 @@ $button_open.Add_Click({
     }
 })
 
-$form.Controls.Add($button_open)
-
-# up button ----------------------------------------------
-
-$button_up = New-Object System.Windows.Forms.Button
-$button_up.Text = "↑"
-$button_up.Location = New-Object System.Drawing.Point(430, 50)
-$button_up.Size = New-Object System.Drawing.Size(60, 25)
 $button_up.Add_Click({
     $selectedIndex = $listBox.SelectedIndex
     if ($selectedIndex -gt 0) {
@@ -128,14 +143,7 @@ $button_up.Add_Click({
         $listBox.SelectedIndex = $selectedIndex - 1
     }
 })
-$form.Controls.Add($button_up)
 
-# down button ----------------------------------------------
-
-$button_down = New-Object System.Windows.Forms.Button
-$button_down.Text = "↓"
-$button_down.Location = New-Object System.Drawing.Point(430, 90)
-$button_down.Size = New-Object System.Drawing.Size(60, 25)
 $button_down.Add_Click({
     $selectedIndex = $listBox.SelectedIndex
 
@@ -149,39 +157,18 @@ $button_down.Add_Click({
         $listBox.SelectedIndex = $selectedIndex + 1
     }
 })
-$form.Controls.Add($button_down)
 
-# delete button ----------------------------------------------
-
-$button_delete = New-Object System.Windows.Forms.Button
-$button_delete.Text = "del"
-$button_delete.Location = New-Object System.Drawing.Point(430, 130)
-$button_delete.Size = New-Object System.Drawing.Size(60, 25)
 $button_delete.Add_Click({
     $selectedIndex = $listBox.SelectedIndex
     if ($selectedIndex -ge 0) {
         $listBox.Items.RemoveAt($selectedIndex)
     }
 })
-$form.Controls.Add($button_delete)
 
-# all clear button -------------------------------------------
-
-$button_clear = New-Object System.Windows.Forms.Button
-$button_clear.Text = "clear"
-$button_clear.Location = New-Object System.Drawing.Point(430, 170)
-$button_clear.Size = New-Object System.Drawing.Size(60, 25)
 $button_clear.Add_Click({
     $listBox.Items.Clear()
 })
-$form.Controls.Add($button_clear)
 
-# run button ----------------------------------------------
-
-$button_run = New-Object System.Windows.Forms.Button
-$button_run.Text = "join"
-$button_run.Location = New-Object System.Drawing.Point(430, 280)
-$button_run.Size = New-Object System.Drawing.Size(60, 25)
 $button_run.Add_Click({
     if ($listBox.Items.Count -eq 0) {
         return
@@ -200,7 +187,10 @@ $button_run.Add_Click({
         }
     }
 })
-$form.Controls.Add($button_run)
+
+$form.Controls.AddRange(@(
+    $listBox, $button_open, $button_up, $button_down, $button_delete, $button_clear, $button_run
+))
 
 $form.ShowDialog()
 
