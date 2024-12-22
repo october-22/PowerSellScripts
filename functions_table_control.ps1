@@ -46,7 +46,7 @@ function Get-Table-FromExcel {
     )
 
     $Excel = New-Object -ComObject Excel.Application
-    $Excel.Visible = $false
+    $Excel.Visible = $true
     $Workbook = $Excel.Workbooks.Open($ExcelFilePath)
     $Worksheet = $Workbook.Worksheets.Item($WorkSheetNumber)
 

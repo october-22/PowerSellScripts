@@ -1,5 +1,6 @@
 ﻿. $PSScriptRoot\functions_table_control.ps1
 . $PSScriptRoot\functions_binary.ps1
+. $PSScriptRoot\functions_widget.ps1
 
 
 <# 
@@ -183,50 +184,11 @@ $button_table.Text = "..."
 $button_table.Location = New-Object System.Drawing.Point(520, 28)
 $button_table.Size = New-Object System.Drawing.Size(30, 25)
 
-$label_start_row = New-Object System.Windows.Forms.Label
-$label_start_row.Text = "start row :"
-$label_start_row.Location = New-Object System.Drawing.Point(10, 70)
-$label_start_row.Size = New-Object System.Drawing.Size(60, 15)
-
-$textbox_start_row = New-Object System.Windows.Forms.TextBox
-$textbox_start_row.Location = New-Object System.Drawing.Point(70, 65)
-$textbox_start_row.Size = New-Object System.Drawing.Size(25, 25)
-
-$label_start_col = New-Object System.Windows.Forms.Label
-$label_start_col.Text = "start col :"
-$label_start_col.Location = New-Object System.Drawing.Point(115, 70)
-$label_start_col.Size = New-Object System.Drawing.Size(60, 15)
-
-$textbox_start_col = New-Object System.Windows.Forms.TextBox
-$textbox_start_col.Location = New-Object System.Drawing.Point(175, 65)
-$textbox_start_col.Size = New-Object System.Drawing.Size(25, 25)
-
-$label_end_row = New-Object System.Windows.Forms.Label
-$label_end_row.Text = "end row :"
-$label_end_row.Location = New-Object System.Drawing.Point(10, 100)
-$label_end_row.Size = New-Object System.Drawing.Size(60, 15)
-
-$textbox_end_row = New-Object System.Windows.Forms.TextBox
-$textbox_end_row.Location = New-Object System.Drawing.Point(70, 95)
-$textbox_end_row.Size = New-Object System.Drawing.Size(25, 25)
-
-$label_end_col = New-Object System.Windows.Forms.Label
-$label_end_col.Text = "end col :"
-$label_end_col.Location = New-Object System.Drawing.Point(115, 100)
-$label_end_col.Size = New-Object System.Drawing.Size(60, 15)
-
-$textbox_end_col = New-Object System.Windows.Forms.TextBox
-$textbox_end_col.Location = New-Object System.Drawing.Point(175, 95)
-$textbox_end_col.Size = New-Object System.Drawing.Size(25, 25)
-
-$label_split_files = New-Object System.Windows.Forms.Label
-$label_split_files.Text = "split files :"
-$label_split_files.Location = New-Object System.Drawing.Point(230, 70)
-$label_split_files.Size = New-Object System.Drawing.Size(60, 15)
-
-$checkbox_split_files = New-Object System.Windows.Forms.CheckBox
-$checkbox_split_files.Location = New-Object System.Drawing.Point(290, 62)
-$checkbox_split_files.Size = New-Object System.Drawing.Size(30, 30)
+$widget_start_row = Widget-TextBox -Label "start row" -X 10  -Y 60
+$widget_end_row   = Widget-TextBox -Label "end row"   -X 10  -Y 90
+$widget_start_col = Widget-TextBox -Label "start col" -X 110 -Y 60
+$widget_end_col   = Widget-TextBox -Label "end col"   -X 110 -Y 90
+$widget_split_files = Widget-CheckBox -Label "split files" -X 210 -Y 60
 
 $button_run = New-Object System.Windows.Forms.Button
 $button_run.Text = "run"
@@ -247,11 +209,11 @@ $button_table.Add_Click({
 $button_run.Add_Click({
     
     $test_pattern_table = $textbox_table.Text
-    $start_row = [int]$textbox_start_row.Text
-    $end_row = [int]$textbox_end_row.Text
-    $start_column = [int]$textbox_start_col.Text
-    $end_column = [int]$textbox_end_col.Text
-    $split_files = $checkbox_split_files.Checked
+    $start_row = [int]$widget_start_row.TextBox.Text
+    $end_row = [int]$widget_end_row.TextBox.Text
+    $start_column = [int]$widget_start_col.TextBox.Text
+    $end_column = [int]$widget_end_col.TextBox.Text
+    $split_files = $widget_split_files.CheckBox.Checked
 
     if ([string]::IsNullOrWhiteSpace($test_pattern_table)) {
         [System.Windows.Forms.MessageBox]::Show("not path is not specified.", "Error")
@@ -290,18 +252,13 @@ $button_run.Add_Click({
 
 $form.Controls.AddRange(@(
     $label_table, 
-    $label_start_row, 
-    $label_start_col, 
-    $label_end_row, 
-    $label_end_col, 
-    $label_split_files,
-    $textbox_table, 
-    $textbox_start_row, 
-    $textbox_end_row, 
-    $textbox_start_col, 
-    $textbox_end_col,
-    $checkbox_split_files, 
+    $textbox_table,
     $button_table, 
+    $widget_start_row.Panel,
+    $widget_end_row.Panel,
+    $widget_start_col.Panel,
+    $widget_end_col.Panel,
+    $widget_split_files.Panel,  
     $button_run
 ))
 
