@@ -184,10 +184,10 @@ $button_table.Text = "..."
 $button_table.Location = New-Object System.Drawing.Point(520, 28)
 $button_table.Size = New-Object System.Drawing.Size(30, 25)
 
-$widget_start_row = Widget-TextBox -Label "start row" -X 10  -Y 60
-$widget_end_row   = Widget-TextBox -Label "end row"   -X 10  -Y 90
-$widget_start_col = Widget-TextBox -Label "start col" -X 110 -Y 60
-$widget_end_col   = Widget-TextBox -Label "end col"   -X 110 -Y 90
+$widget_start_row = New-Widget-TextBox -Label "start row" -X 10  -Y 60
+$widget_end_row   = New-Widget-TextBox -Label "end row"   -X 10  -Y 90
+$widget_start_col = New-Widget-TextBox -Label "start col" -X 110 -Y 60
+$widget_end_col   = New-Widget-TextBox -Label "end col"   -X 110 -Y 90
 $widget_split_files = Widget-CheckBox -Label "split files" -X 210 -Y 60
 
 $button_run = New-Object System.Windows.Forms.Button

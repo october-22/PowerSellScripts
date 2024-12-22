@@ -25,7 +25,7 @@
     $form.Controls.Add($widget.Panel)
     Write-Host $widget.TextBox.Text
 #>
-function Widget-TextBox() {
+function New-Widget-TextBox() {
     param (
         [string]$Label,
         [int]$X,
@@ -79,7 +79,7 @@ function Widget-TextBox() {
     $form.Controls.Add($widget.Panel)
     Write-Host $widget.CheckBox.Checked
 #>
-function Widget-CheckBox() {
+function New-Widget-CheckBox() {
     param (
         [string]$Label,
         [int]$X,
