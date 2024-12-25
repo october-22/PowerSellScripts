@@ -1,7 +1,61 @@
-﻿. $PSScriptRoot\functions_table_control.ps1
+﻿<# 
+    from_generate_binary_files.py 
+    
+    テストパターンテーブルから、バイナリ形式のテストコードを生成する。
+
+    # 使用条件 --------------------------------------------------
+
+        以下の.ps1ファイルが同じディレクトリに存在すること。
+        
+        ・ functions_table_control.ps1
+        ・ functions_binary.ps1
+        ・ functions_widget.ps1
+ 
+    # 使用手順 --------------------------------------------------　
+
+        1.Excelでテストパターンテーブルを作成する。
+        
+            フォーマットは、ヘッダー部として一行確保、カラム名を記述。
+            その下に各テストデータを追加する。
+            最終行にフッター部を追加。
+            フッター部にはpack10圧縮指定をするためのオプション"p"を指定できる。
+            ただし、"p"指定の列には0～9までの数字のみが使われていること。
+            それ以外、アルファベットや空白、負数、小数点が存在した場合、エラーとなる。
+            無記入では通常のバイト変換が行われる。
+            以下のテーブルではheder2以下の値に対してpack10圧縮処理が行われる。
+
+            header1 | header2 | deader3
+            -----------------------------
+            11111   | 22222   | 33333
+            -----------------------------
+            44444   | 55555   | AAAAA
+            -----------------------------
+                    | p       |
+            -----------------------------                 
+
+        2. from_generate_binary_files.py を起動。
+    
+        3. test pattern table(.xlsx) にテストパターンテーブルを記述したExcelワークブックの絶対パスを指定。
+
+        4. テーブルの範囲を指定。
+
+            テーブルは、ワークシート1にある前提。
+        
+            ・ start row : テーブル開始行(ヘッダー含む)を数値指定 
+            ・ end row   : テーブル終了行(フッター含む)を数値指定 
+            ・ start col : テーブルの開始列を数値指定
+            ・ end col   : テーブルの終了列を数値指定
+
+        5. テーブルの各行別にテストデータを生成する場合、チェックを入れる。
+            
+            チェックが無い場合、全てのテストデータは一つのファイルとして生成される。
+
+        6. run ボタンで保存場所、ファイル名を指定し、生成開始となる。
+#>
+
+. $PSScriptRoot\functions_table_control.ps1
 . $PSScriptRoot\functions_binary.ps1
 . $PSScriptRoot\functions_widget.ps1
-
 
 <# 
 .SYNOPSIS
@@ -65,7 +119,7 @@ function Generate-BinaryFiles(){
 
     for ($i = 0; $i -lt $table_data.Count; $i++) {
         $row = $table_data[$i]
-        $binary_line = Convert-Binary-Line -Row $row -Futter $table_futter
+        $binary_line = Convert-BinaryData-OneLine -Strings $row -Options $table_futter
         $binary_all_test_pattern += $binary_line
         if ($true -eq $Split_Files){
             $split_filepath = Add-Index-FileName -Path $OutputFilePath -Index ($i + 1)
@@ -76,58 +130,6 @@ function Generate-BinaryFiles(){
         [System.IO.File]::WriteAllBytes($OutputFilePath, $binary_all_test_pattern)
     }  
 }
-
-
-<#
-.SYNOPSIS
-    文字列型配列各要素をバイナリデータに変換する。
-
-.DESCRIPTION
-    バイナリデータ変換には、Pack10圧縮後バイナリ化と通常のバイナリ化の二種がある。
-    $Futterの値に"p"があった場合のみPack10圧縮を行う。
-    行全体をバイナリ形式として結合、末尾に改行コード(\r\n)を付加して返します。
-
-.PARAMETER Row
-    変換対象となる文字列型配列。注意：0-9までのstring型整数と半角空白のみ
-
-.PARAMETER Futter
-    各行データ($Row)に対する処理方法を示す配列。
-    - `"p"`: Pack10圧縮処理を適用。
-    - その他: 指定したエンコーディング($Encode)を使用して変換。
-
-.PARAMETER Encode
-    エンコーディング形式を指定(デフォルト:"euc-jp")
-
-.OUTPUTS
-    [byte[]]
-    バイナリ形式に変換されたデータ行。末尾に改行コード (\r\n) 付加。
-
-.EXAMPLE
-    $Row = @("123", "abc", "456")
-    $Futter = @("p", "", "p")
-    $binaryLine = Convert-Binary-Line -Row $Row -Futter $Futter -Encode "utf-8"
-#>
-function Convert-Binary-Line() {
-    param (
-        [string[]]$Row,
-        [string[]]$Futter,
-        [string]$Encode = "euc-jp"
-    )
-    $binary_line = @()
-    for ($i = 0; $i -lt $Row.Count; $i++){
-        $cell = $Row[$i]
-        $futter_ = $Futter[$i]     
-        if ($futter_ -eq "p") {
-            $binary_data = Convert-BinaryData-Pack10 -Data $cell
-        }else{
-            $binary_data = [System.Text.Encoding]::GetEncoding($Encode).GetBytes($cell)        
-        }
-        $binary_line += $binary_data     
-    }
-    $crlf = [byte[]](0x0D, 0x0A)
-    return $binary_line + $crlf
-}
-
 
 <#
 .SYNOPSIS
@@ -188,7 +190,7 @@ $widget_start_row = New-Widget-TextBox -Label "start row" -X 10  -Y 60
 $widget_end_row   = New-Widget-TextBox -Label "end row"   -X 10  -Y 90
 $widget_start_col = New-Widget-TextBox -Label "start col" -X 110 -Y 60
 $widget_end_col   = New-Widget-TextBox -Label "end col"   -X 110 -Y 90
-$widget_split_files = Widget-CheckBox -Label "split files" -X 210 -Y 60
+$widget_split_files = New-Widget-CheckBox -Label "split files" -X 210 -Y 60
 
 $button_run = New-Object System.Windows.Forms.Button
 $button_run.Text = "run"
@@ -238,7 +240,8 @@ $button_run.Add_Click({
                 [System.Windows.Forms.MessageBoxButtons]::OK, 
                 [System.Windows.Forms.MessageBoxIcon]::Error)
             }else{
-                [System.Windows.Forms.MessageBox]::Show($outputFile, "complate!", 
+                $message = "バイナリデータ生成に成功 : " + $outputFile
+                [System.Windows.Forms.MessageBox]::Show($message, "cuccess!", 
                 [System.Windows.Forms.MessageBoxButtons]::OK, 
                 [System.Windows.Forms.MessageBoxIcon]::Information)
             }

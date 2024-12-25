@@ -1,9 +1,11 @@
 <#
 .SYNOPSIS
-    指定されたデータファイルを読み込み、分割定義ファイルを使用して各行をCSV形式に変換し、指定された出力ファイルに書き込みます。
+    指定されたデータファイルを読み込み、分割定義ファイルを使用して各行をCSV形式に変換し、
+    指定された出力ファイルに書き込みます。
 
 .DESCRIPTION
-    入力データファイルと定義ファイルを読み込み、定義ファイルに基づいて文字列を分割します。分割後、各行をCSV形式に変換して、指定された出力ファイルに結果を書き込みます。
+    入力データファイルと定義ファイルを読み込み、定義ファイルに基づいて文字列を分割します。
+    分割後、各行をCSV形式に変換して、指定された出力ファイルに結果を書き込みます。
 
 .PARAMETER DataFilePath
     処理するデータファイルパス。
@@ -16,7 +18,8 @@
 
 .EXAMPLE
     Convert-String-CSVFile -DataFilePath "string.txt" -DefinitionFilePath "definition.txt" -OutputFilePath "output.csv"
-    この例では、`string.txt` と `definition.txt` を使用してデータを処理し、結果を `output.csv` に書き込みます。
+    この例では、`string.txt` と `definition.txt` を使用してデータを処理し、
+    結果を `output.csv` に書き込みます。
 
 .NOTES
     データファイル.txt 各行同一文字数。
@@ -59,8 +62,10 @@ function Convert-String-CSVFile {
     文字列を指定された分割点で分割し、カンマ区切りの結果を返す。
 
 .DESCRIPTION
-    指定された文字列 `$String` を、配列で渡された分割点 `$SplitPoints` に基づいて分割します。
-    分割点は、文字列の各部分を区切るためのインデックスを指定します。分割点の合計が文字列の長さと一致しない場合、falseが返される。
+    指定された文字列 `$String` を、配列で渡された分割点 `$SplitPoints`
+    に基づいて分割します。
+    分割点は、文字列の各部分を区切るためのインデックスを指定します。
+    分割点の合計が文字列の長さと一致しない場合、falseが返される。
     すべての部分をカンマ区切りで結合して返します。
 
 .PARAMETER String
@@ -73,7 +78,8 @@ function Convert-String-CSVFile {
     $result = Split-String -String "abbccc" -SplitPoints 1, 2, 3
     # 結果: "a,bb,ccc"
 
-    この例では、文字列 "abbccc" を分割点 `[1, 2, 3]` に従って分割し、結果として "a,bb,ccc" が返されます。
+    この例では、文字列 "abbccc" を分割点 `[1, 2, 3]` に従って分割し、
+    結果として "a,bb,ccc" が返されます。
 #>
 function Convert-String-CSV {
     param (
@@ -104,14 +110,16 @@ function Convert-String-CSV {
     指定された文字列と分割ポイントの合計が一致するかをテスト。
 
 .DESCRIPTION
-    この関数は、`$SplitPoints` 配列の合計値が `$String` の長さと一致するかどうかを確認します。
+    この関数は、`$SplitPoints` 配列の合計値が `$String` の長さと
+    一致するかどうかを確認します。
     一致すれば `$true`、一致しない場合は `$false` を返します。
 
 .PARAMETER String
     チェックする対象の文字列。文字列の長さと分割ポイントの合計が一致するか確認。
 
 .PARAMETER SplitPoints
-    文字列を分割する位置を指定する整数の配列。この配列の合計値が `$String` の長さと一致するかをテスト。
+    文字列を分割する位置を指定する整数の配列。この配列の合計値が 
+    `$String` の長さと一致するかをテスト。
 
 .EXAMPLE
     # 文字列 "abbccc" と分割ポイント [1, 2, 3] を指定して、合計が一致するかをテスト
@@ -217,19 +225,29 @@ $button_run.Add_Click({
             $result = Convert-String-CSVFile -DataFilePath $dataFile -DefinitionFilePath $defFile -OutputFilePath $outputFile
             if($false -eq $result){
                 $ErrorMessage = "Error! : Wrong definition. Does not match data."
-                [System.Windows.Forms.MessageBox]::Show($ErrorMessage, "Error!", [System.Windows.Forms.MessageBoxButtons]::OK, [System.Windows.Forms.MessageBoxIcon]::Error)
+                [System.Windows.Forms.MessageBox]::Show($ErrorMessage, "Error!", 
+                [System.Windows.Forms.MessageBoxButtons]::OK, 
+                [System.Windows.Forms.MessageBoxIcon]::Error)
             }else{
-                [System.Windows.Forms.MessageBox]::Show($outputFile, "complate!", [System.Windows.Forms.MessageBoxButtons]::OK, [System.Windows.Forms.MessageBoxIcon]::Information)
+                [System.Windows.Forms.MessageBox]::Show($outputFile, "complate!", 
+                [System.Windows.Forms.MessageBoxButtons]::OK, 
+                [System.Windows.Forms.MessageBoxIcon]::Information)
             }
         } catch {
-            [System.Windows.Forms.MessageBox]::Show("ERROR: $_", "error!", [System.Windows.Forms.MessageBoxButtons]::OK, [System.Windows.Forms.MessageBoxIcon]::Error)
+            [System.Windows.Forms.MessageBox]::Show("ERROR: $_", "error!", 
+            [System.Windows.Forms.MessageBoxButtons]::OK, 
+            [System.Windows.Forms.MessageBoxIcon]::Error)
         }
     }
 })
 
 $form.Controls.AddRange(@(
-    $label_data, $textbox_data, $button_data,
-    $label_def, $textbox_def, $button_def,
+    $label_data, 
+    $textbox_data, 
+    $button_data,
+    $label_def, 
+    $textbox_def, 
+    $button_def,
     $button_run
 ))
 

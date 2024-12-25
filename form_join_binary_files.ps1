@@ -23,8 +23,8 @@
 #>
 function Join-BinaryFiles {
     param (
-        [Parameter(Mandatory = $true)][string[]]$InputFiles,
-        [Parameter(Mandatory = $true)][string]$OutputFile
+        [string[]]$InputFiles,
+        [string]$OutputFile
     )
     $outputStream = [System.IO.File]::OpenWrite($OutputFile)
 
@@ -45,6 +45,7 @@ Add-Type -AssemblyName System.Windows.Forms
 $form = New-Object System.Windows.Forms.Form
 $form.Text = "Join BinaryFiles"
 $form.Size = New-Object System.Drawing.Size(510, 360)
+$form.StartPosition = "CenterScreen"
 $form.FormBorderStyle = [System.Windows.Forms.FormBorderStyle]::FixedSingle
 
 $listBox = New-Object System.Windows.Forms.ListBox
@@ -181,9 +182,13 @@ $button_run.Add_Click({
         try {
             Join-BinaryFiles -InputFiles $inputFiles -OutputFile $outputFile
             $listBox.Items.Clear()
-            [System.Windows.Forms.MessageBox]::Show($outputFile, "complate!", [System.Windows.Forms.MessageBoxButtons]::OK, [System.Windows.Forms.MessageBoxIcon]::Information)
+            [System.Windows.Forms.MessageBox]::Show($outputFile, "complate!", 
+            [System.Windows.Forms.MessageBoxButtons]::OK, 
+            [System.Windows.Forms.MessageBoxIcon]::Information)
         } catch {
-            [System.Windows.Forms.MessageBox]::Show("ERROR: $_", "error!", [System.Windows.Forms.MessageBoxButtons]::OK, [System.Windows.Forms.MessageBoxIcon]::Error)
+            [System.Windows.Forms.MessageBox]::Show("ERROR: $_", "error!", 
+            [System.Windows.Forms.MessageBoxButtons]::OK, 
+            [System.Windows.Forms.MessageBoxIcon]::Error)
         }
     }
 })
